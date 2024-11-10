@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>こんにちは <%= @seller.name %>さん</p>
+    <p>一度購入された<%= @post.title%>がキャンセルされました。</p>
+    <p>残念ですが、また次回購入されるのをお待ちください。</p>
+    <p><%= link_to 'この商品の詳細ページへ', post_url(@post.id, host: 'localhost', port: 3000) %></p>
+  </body>
+</html>

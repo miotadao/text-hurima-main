@@ -1,0 +1,29 @@
+<h2 class="sign-h2">ログイン</h2>
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'sign-form-contaier' }) do |f| %>
+  <div class="field">
+    <%= f.label :name, "ユーザーネーム" %>
+    <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "sign-form" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password, "パスワード" %>
+    <%= f.password_field :password, autocomplete: "current-password", class: "sign-form" %>
+  </div>
+
+  <% if devise_mapping.rememberable? %>
+    <div id="cleck-container">
+      <%= f.label :remember_me, "ログイン状態を維持" %>
+      <%= f.check_box :remember_me, class: "sign-check" %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit "ログイン", class: "sign-submit"  %>
+  </div>
+  <div class="sign-link-container">
+    <p>アカウントをお持ちでない方</p>
+    <%= link_to "新規登録", new_user_registration_path, class: "sign-link" %> 
+  </div>
+<% end %>
+

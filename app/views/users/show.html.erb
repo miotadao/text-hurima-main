@@ -1,0 +1,72 @@
+<h2 class="page-title">自分の出品一覧</h2>
+<% if @posts.empty?%> 
+  <div id="u-show-empty-container">
+    <p id="u-show-empty">出品した商品はありません。</p>
+    <%= link_to "商品を出品する", new_post_path, id: "u-show-sell" %>
+  </div>
+<% else %>
+  <ul class="ul">
+      <% @posts.each do |post| %>
+      <li class="li">
+          <%= link_to post_path(post), class: 'link-to' do %>
+            <% if post.image.attached? %>
+              <div class="icon-container">
+                <%= image_tag post.image, class:'icon' %>
+                <% if post.is_sold %>
+                  <p class="sold-icon">SOLD!</p>
+                <% end %>
+                <% if post.is_receive %>
+                  <p class="complete-icon">COMPLETE</p>
+                <% end %>
+                <p class="img-price">
+                  ￥<%= post.price %>
+                </p>
+              </div>
+            <% else %>
+              <div class="no-image-container">
+                <p class="no-image">No Image</p>
+                <% if post.is_sold %>
+                  <p class="sold-icon">SOLD!</p>
+                <% end %>
+                <% if post.is_receive %>
+                  <p class="complete-icon">COMPLETE</p>
+                <% end %>
+                <p class="img-no-price">
+                  ￥<%= post.price %>
+                </p>
+              </div>
+            <% end %>
+            <div class="li-text">
+              <div class="t-a-p">
+                <h2 class="title"><%= post.title %></h2>
+                <p class="author"><%= post.author %></p>
+              </div>
+            </div>
+          <% end %>
+            <div id="u-show-btn-container">
+              <% if post.is_sold && !post.is_receive %>
+                <p id="dont-edit-delete">購入された商品の編集・削除はできません。</p>
+              <% elsif post.is_sold && post.is_receive %>
+               
+              <% else %>
+                <%= link_to "この出品を編集", edit_post_path(post), class: "edit" %>
+                <div class="delete-container">
+                  <%= button_to "この出品を削除", post_path(post), method: :delete, :onclick => "return delete_check()", class: "delete" %>
+                </div>
+              <% end %> 
+            </div>
+      </li>
+      <% end %>
+    </ul>
+ 
+<% end %>
+
+<script>
+	function delete_check() {
+		const result = window.confirm("この商品の出品を削除しますか？？一度削除すると復元はできません。")
+    if (!result) {
+      return false;
+    }
+    return true;
+  };	
+</script> 

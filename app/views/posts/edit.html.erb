@@ -1,0 +1,62 @@
+<h2 class="page-title">出品内容修正</h2>
+<%= form_with model: @post, class: "form-container" do |form|%>
+<div id="img-form-container">
+  <p>商品画像</p>
+  <%= form.file_field :image, id: "image-upload", class: "img-form" %>
+    <div id="image-preview-container">
+      <img id="image-preview"/>
+    </div>
+</div>
+<div>
+  <p>テキストのタイトル（必須）</p>
+  <%= form.text_field :title, class: "new-form", id: "title" %>
+</div>
+<div>
+  <p>テキストの著者</p>
+  <%= form.text_field :author, class: "new-form" %>
+</div>
+<div class="content-container">
+  <p>説明</p>
+  <%= form.text_area :content, class: "content" %>
+</div>
+<div>
+  <p>価格（数字のみ入力）（必須）</p>
+  <%= form.text_field :price, oninput: "this.value = this.value.replace(/[！-～]/g, function(ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })", class: "new-price-form", id: "price" %>
+</div>
+<div>
+  <%= form.submit "この内容で修正する", :onclick => "return check()", class: "submit-btn", id: "submit"%> 
+  <p class="not-submit-p hide" id="submit-p">必須項目が未入力です</p>
+</div>
+<% end %>
+
+<script>
+  const title = document.getElementById('title');
+  const price = document.getElementById('price');
+  const submit = document.getElementById("submit");
+  const p = document.getElementById('submit-p');
+  
+ function updateSubmitState() {
+  if (title.value && price.value) {
+    submit.disabled = false;
+    p.classList.add('hide');
+    submit.classList.remove("light-color");
+  } else {
+    submit.disabled = true;
+    p.classList.remove('hide');
+    submit.classList.add("light-color");
+  }
+}
+
+title.addEventListener("input", updateSubmitState);
+price.addEventListener("input", updateSubmitState);
+
+
+	function check() {
+		const result = window.confirm("この内容で修正しますか？")
+    if (!result) {
+      return false;
+    }
+    return true;
+  };	
+  
+</script> 

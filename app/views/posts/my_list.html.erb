@@ -1,0 +1,47 @@
+<h2 class="page-title">購入した商品一覧</h2>
+
+<% if @posts.any? %>
+  <ul class="ul">
+      <% @posts.each do |post| %>
+      <li class="li">
+          <%= link_to post_path(post), class: 'link-to' do %>
+            <% if post.image.attached? %>
+              <div class="icon-container">
+                <%= image_tag post.image, class:'icon' %>
+                <% if post.is_sold %>
+                  <p class="sold-icon">SOLD!</p>
+                <% end %>
+                <% if post.is_receive %>
+                  <p class="complete-icon">COMPLETE</p>
+                <% end %>
+                <p class="img-price">
+                  ￥<%= post.price %>
+                </p>
+              </div>
+            <% else %>
+              <div class="no-image-container">
+                <p class="no-image">No Image</p>
+                <% if post.is_sold %>
+                  <p class="sold-icon">SOLD!</p>
+                <% end %>
+                <% if post.is_receive %>
+                  <p class="complete-icon">COMPLETE</p>
+                <% end %>
+                <p class="img-no-price">
+                  ￥<%= post.price %>
+                </p>
+              </div>
+            <% end %>
+            <div class="li-text">
+              <div class="t-a-p">
+                <h2 class="title"><%= post.title %></h2>
+                <p class="author"><%= post.author %></p>
+              </div>
+            </div>
+          <% end %>
+      </li>
+      <% end %>
+    </ul>
+<% else %>
+  <p>購入した商品はありません。</p>
+<% end %>

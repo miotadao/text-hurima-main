@@ -1,0 +1,37 @@
+<h2 class="sign-h2">新規登録</h2>
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'sign-form-contaier' }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <div class="field">
+    <%= f.label :name, "ユーザーネーム"%>
+    <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "sign-form" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :email, "メールアドレス（通知はこのアドレスに送信されます)" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "sign-form" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password, "パスワード"%>
+    <% if @minimum_password_length %>
+    <em>(半角英数字を組み合わせて<%= @minimum_password_length %>字以上)</em>
+    <% end %>
+    <%= f.password_field :password, autocomplete: "new-password", class: "sign-form" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password_confirmation, "パスワード(確認用)" %>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "sign-form" %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "新規登録", class: "sign-submit" %>
+  </div>
+  <div class="sign-link-container">
+    <p>アカウントをお持ちの方</p>
+    <%= link_to "ログインする", new_user_session_path, class: "sign-link" %>
+  </div>
+<% end %>
+

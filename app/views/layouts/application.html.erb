@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TextHurima</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%
+=begin%>
+ <%= javascript_importmap_tags %> 
+<%
+=end%>
+  </head>
+
+  <body>
+  <% if user_signed_in? %>
+  <div id="wrapper">
+    <header>
+      <div id="header">
+        <div id="header-left">
+          <%= link_to posts_path do %>
+            <h1 id="index-h1">テキストのフリマサイト</h1>
+            <h3 id="index-h3">使わなくなったテキストを次に必要な人へ</h3>
+          <% end %>
+        </div>
+        <div id="header-right">
+          <div id="header-right-up">
+            <% if user_signed_in? %>
+              <p class="current-user"><%= current_user.name %>さんがログイン中</p>
+              <%= form_tag destroy_user_session_path, method: :delete do %>
+                <%= submit_tag "ログアウト", id:"log-out" %>
+              <% end %> 
+              <%= link_to "自分の出品", user_path(current_user.id), id: "user-list" %>
+              <%= link_to '購入した商品', my_list_posts_path, id: "my-list" %>
+              <%= link_to "出品", new_post_path, id: "sell" %>
+            <% else %>
+              <%= link_to "ログインする", new_user_session_path %>
+              <%= link_to "新規登録する", new_user_registration_path %>
+            <% end %>
+          </div>
+          <%= form_with(url: posts_path, method: :get, local: true, html: { id: 'header-right-under'}) do %>
+            <div id="search-container">
+              <%= text_field_tag :query, @query, placeholder: '  タイトル・著者名', id:"search-form" %>
+              <%= select_tag :sort, options_for_select([
+                ['新しい投稿順', 'created_at_desc'],
+                ['古い投稿順', 'created_at_asc'],
+                ['価格が高い順', 'price_desc'],
+                ['価格が安い順', 'price_asc']
+              ], @sort_option), id:"search-select" %>
+              <%= submit_tag "", id: "search-btn" %>
+            </div>
+          <% end %>
+        </div>
+        <button id="mobile-serch-icon"></button> 
+        
+      </div>
+
+
+    </header>
+    <main>
+      <%= yield %>
+    </main>
+    <footer>
+    <div id="inner">
+      <div>
+        <%= link_to "使い方ガイド", guide_path %>
+      </div>
+      <div>
+        <%= link_to "利用のお願い", term_path %>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+    <div id="search-float-form" class="hide">
+      <%= form_with(url: posts_path, method: :get, local: true, html: { id: 'header-right-under'}) do %>
+        <div id="search-container">
+          <%= text_field_tag :query, @query, placeholder: '  タイトル・著者名', id:"search-form" %>
+          <%= select_tag :sort, options_for_select([
+            ['新しい投稿順', 'created_at_desc'],
+            ['古い投稿順', 'created_at_asc'],
+            ['価格が高い順', 'price_desc'],
+            ['価格が安い順', 'price_asc']
+          ], @sort_option), id:"search-select" %>
+          <%= submit_tag "", id: "search-btn" %>
+        </div>
+      <button id="mobile-serch-close" >✖</button>
+      <% end %>
+    </div>
+
+    <nav class="mobile-nav">
+      <div>
+        <%= form_tag destroy_user_session_path, method: :delete do %>
+          <%= button_tag type: 'submit', id: 'm-log-out' do %>
+            <div id="m-log-out-icon"></div>
+            <p>ログアウト</p>
+          <% end %>
+        <% end %> 
+      </div>
+      <div>
+        <%= link_to user_path(current_user.id), class: "mobile-nav-childs" do %>
+          <div id="m-user-list-icon"></div>
+          <p>出品一覧</p>
+        <% end %>
+      </div>
+      <div>
+        <%= link_to my_list_posts_path, class: "mobile-nav-childs" do %>
+          <div id="m-my-list-icon"></div> 
+          <p>購入一覧</p>
+        <% end %>
+      </div>
+      <div>
+        <%= link_to new_post_path, class: "mobile-nav-childs" do %>
+          <div id="m-sell-icon"></div>  
+          <p>出品</p>
+        <% end %>
+
+      </div>
+    </nav>
+
+  
+  <% else %>
+    <%= yield %>
+  <% end %> 
+
+
+
+
+  <script>
+//   document.addEventListener('DOMContentLoaded', (event) => {
+//   // 要素が確実に存在することを確認してから addEventListener を設定
+//   const myElement = document.getElementById('myElement');
+//   if (myElement) {
+//     myElement.addEventListener('click', () => {
+//       const searchBtn = document.getElementById('mobile-serch-icon');
+//     const form = document.getElementById('search-float-form');
+//     const close = document.getElementById('mobile-serch-close');
+
+//     searchBtn.addEventListener('click', function () {
+//       form.classList.remove('hide');
+//     });
+
+//     close.addEventListener('click', function (e) {
+//       form.classList.add('hide');
+//       e.preventDefault();
+//     });
+//     });
+//   }
+// });
+    
+
+    document.addEventListener('DOMContentLoaded', () => {
+  const searchBtn = document.getElementById('mobile-serch-icon');
+  const form = document.getElementById('search-float-form');
+  const close = document.getElementById('mobile-serch-close');
+
+  if (searchBtn && form && close) {
+    searchBtn.addEventListener('click', () => {
+      form.classList.remove('hide');
+    });
+
+    close.addEventListener('click', (e) => {
+      form.classList.add('hide');
+      e.preventDefault();
+    });
+  }
+});
+  </script>
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,95 @@
+<div id="wrapper">
+<% if !user_signed_in? %>
+  <div id="header">
+    <div id="header-left">
+      <%= link_to posts_path do %>
+        <h1 id="index-h1">テキストのフリマサイト</h1>
+        <h3 id="index-h3">使わなくなったテキストを次に必要な人へ</h3>
+      <% end %>
+    </div>
+    <div id="header-right">
+      <div id="header-right-up">
+          <%= link_to "ログインする", new_user_session_path, id: "sign-in" %>
+          <%= link_to "新規登録する", new_user_registration_path, id: "sign-up" %>
+          <%= link_to '購入した商品', my_list_posts_path, id: "my-list" %>
+          <%= link_to "出品", new_post_path, id: "sell" %>
+      </div>
+      <%= form_with(url: posts_path, method: :get, local: true, html: { id: 'header-right-under'}) do %>
+        <div id="search-container">
+          <%= text_field_tag :query, @query, placeholder: '  タイトル・著者名', id:"search-form" %>
+          <%= select_tag :sort, options_for_select([
+            ['新しい投稿順', 'created_at_desc'],
+            ['古い投稿順', 'created_at_asc'],
+            ['価格が高い順', 'price_desc'],
+            ['価格が安い順', 'price_asc']
+          ], @sort_option), id:"search-select" %>
+          <%= submit_tag "", id: "search-btn" %>
+        </div>
+      <% end %>
+    </div>
+    <div id="not-log-in">
+      <%= link_to "ログイン", new_user_session_path, id: "not-sign-in" %>
+      <%= link_to "新規登録", new_user_registration_path, id: "not-sign-up" %>
+    </div>
+  
+  </div>
+<% end %>
+
+<h2 class="page-title">Home</h2>
+
+<div id="index">
+  <% if @no_results %>
+    <p>検索しましたが見つかりませんでした。</p>
+  <% else %>
+    <ul class="ul">
+      <% @posts.each do |post| %>
+      <li class="li">
+          <%= link_to post_path(post), class: 'link-to' do %>
+            <% if post.image.attached? %>
+              <div class="icon-container">
+                <%= image_tag post.image, class:'icon' %>
+                <% if post.is_sold %>
+                  <p class="sold-icon">SOLD!</p>
+                <% end %>
+                <p class="img-price">
+                  ￥<%= post.price %>
+                </p>
+              </div>
+            <% else %>
+              <div class="no-image-container">
+                <p class="no-image">No Image</p>
+                <% if post.is_sold %>
+                  <p class="sold-icon">SOLD!</p>
+                <% end %>
+                <p class="img-no-price">
+                  ￥<%= post.price %>
+                </p>
+              </div>
+            <% end %>
+            <div class="li-text">
+              <div class="t-a-p">
+                <h2 class="title"><%= post.title %></h2>
+                <p class="author"><%= post.author %></p>
+              </div>
+            </div>
+          <% end %>
+      </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
+
+<% if !user_signed_in? %>
+  <footer>
+    <div id="inner">
+      <div>
+        <%= link_to "使い方ガイド", guide_path %>
+      </div>
+      <div>
+        <%= link_to "利用のお願い", term_path %>
+      </div>
+    </div>
+  </footer>
+<% end %>
+
+</div>

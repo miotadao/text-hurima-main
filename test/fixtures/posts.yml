@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  content: MyText
+  price: 1
+  seller_name: MyString
+  is_sold: false
+  is_receive: false
+
+two:
+  title: MyString
+  content: MyText
+  price: 1
+  seller_name: MyString
+  is_sold: false
+  is_receive: false

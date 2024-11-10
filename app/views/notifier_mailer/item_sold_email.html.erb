@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>こんにちは <%= @seller.name %>さん</p>
+    <p>出品していたあなたの<%= @post.title%>が購入されました。</p>
+    <p>サイトの購入された商品の詳細ページで購入者の方と商品を受け渡しする場所や日時を相談して決めてください。</p>
+
+    <p><%= link_to 'この商品の詳細ページへ', post_url(@post.id, host: 'localhost', port: 3000) %></p>
+  </body>
+</html>

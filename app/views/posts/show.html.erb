@@ -1,0 +1,227 @@
+
+<h2 id="p-show-page-title">商品詳細</h2>
+<main id="p-show">
+  <% if @post.image.attached? %>
+    <div class="p-show-img-container">
+      <p><%= image_tag @post.image, id: "p-show-img" %></p>
+    </div>
+  <% else %>
+    <div class="p-show-img-container">
+      <p id="p-show-no-image">No Image</p>
+    </div>
+  <% end %>
+  <div id="p-show-right">
+    <div id="p-show-text">
+      <div>
+        <p class="label">【 タイトル 】</p>
+        <h2><%= @post.title %></h2>
+      </div>
+      <div>
+        <p class="label">【 著者 】</p>
+        <p><%= @post.author %></p>
+      </div>
+      <div>
+        <p class="label">【 出品者 】</p>
+        <p><%= @post.seller_name %><span class="p-show-span">さん</span></p>
+      </div>
+      <div>
+        <p class="label">【 価格 】</p>
+        <p><%= @post.price %><span class="p-show-span">円</span></p>
+      </div>
+    </div>
+    <% if @post.is_sold && !@post.is_receive %>
+      <% if @post.bought_id == current_user.id %>
+        <div id="p-show-btn-container">
+          <%= button_to '購入をキャンセル', cancel_post_path(@post), method: :patch, :onclick => "return cancel_check()", id: "cancel" %>
+          <%= button_to '取引を完了させる', completed_post_path(@post), method: :patch, :onclick => "return complete_check()", id: "complete" %>
+        </div>
+      <% else %>
+        <p id="yet-sold">この商品はすでに購入されました。</p>
+      <% end %>
+    <% elsif @post.is_sold && @post.is_receive %>
+        <p id="yet-received">この商品は取引が完了しています。</p>
+    <% else %>
+      <% if @post.user_id != current_user.id %>
+        <%= button_to '購入', buy_post_path(@post), method: :patch, :onclick => "return buy_check()", id: "buy" %>
+      <% end %>
+    <% end %>
+
+    <% if @post.is_sold && !@post.is_receive %>
+      <% if @post.user_id == current_user.id || @post.bought_id == current_user.id %>
+        <div id="chat-container">
+          <h2 class="blinking-text">↓チャットで取引する場所と日時を相談しましょう↓</h2>
+          <% if @post.talks.nil? || @post.talks.empty? %>
+            <p id="yet-comment">まだコメントはありません。</p>
+          <% else %>
+            <ul id="talks-container">
+              <% @post.talks.each do |talk| %>
+                <li id="talk">
+                  <div>
+                    <p id="talk-name"><%= talk.user.name %>:</p>
+                    <p id="talk-content"><%= talk.body %></p>
+                    <small id="talk-time"><%= talk.created_at%></small>
+                  </div>
+                  <% if talk.user == current_user %>
+                    <%= button_to '削除', [@post, talk], method: :delete, :onclick => "return delete_check()", id: "talk-btn" %>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+
+          <%= form_with model: [@post, @talk], local: true, id: "chat-form-container" do |f| %>
+            <%= f.text_area :body, id: "chat-form" %>
+            <%= f.submit "送信", id: "chat-submit" %> 
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+    <div id="explanation-container">
+      <p class="label">【　商品説明　】</p>
+      <p id="explanation-content"><%= @post.content %></p>
+    </div>
+  </div>
+</main>
+<%
+=begin%>
+  スマホ用
+<%
+=end%>
+<main id="m-p-show">
+  <% if @post.image.attached? %>
+    <div class="m-p-show-img-container">
+      <p><%= image_tag @post.image, id: "m-p-show-img" %></p>
+    </div>
+  <% else %>
+    <div class="m-p-show-img-container">
+      <p id="m-p-show-no-image">No Image</p>
+    </div>
+  <% end %>
+  <div id="m-p-show-text">
+    <p id="m-p-title"><%= @post.title %></p>
+    <p id="m-p-author"><span>著者</span><%= @post.author %></p>
+    <p id="m-p-price"><span>￥</span><%= @post.price %></p>
+  </div>
+
+  <% if @post.is_sold && !@post.is_receive %>
+    <% if @post.user_id == current_user.id || @post.bought_id == current_user.id %>
+    <h2 class="blinking-text">↓チャットで取引する場所と日時を相談しましょう↓</h2>
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-button" id="btn1">
+          <p>チャット</p><span class="accordion-span" id="span1">&#9654;</span>
+        </button>
+        <div class="accordion-content hide" id="accordion-chat">
+          <div id="chat-container">
+            <% if @post.talks.nil? || @post.talks.empty? %>
+              <p id="yet-comment">まだコメントはありません。</p>
+            <% else %>
+            <ul id="talks-container">
+            <% @post.talks.each do |talk| %>
+              <li id="talk">
+                <div>
+                  <p id="talk-name"><%= talk.user.name %>:</p>
+                  <p id="talk-content"><%= talk.body %></p>
+                  <small id="talk-time"><%= talk.created_at%></small>
+                </div>
+                <% if talk.user == current_user %>
+                  <%= button_to '削', [@post, talk], method: :delete, :onclick => "return delete_check()", id: "talk-btn" %>
+                <% end %>
+              </li>
+            <% end %>
+            </ul>
+            <% end %>
+
+            <%= form_with model: [@post, @talk], local: true, id: "chat-form-container" do |f| %>
+              <%= f.text_area :body, id: "chat-form" %>
+              <%= f.submit "送信", id: "chat-submit" %> 
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+  <% end %>
+  
+    <div id="m-p-content-container">
+      <p id="m-p-content-container-label">説明</p>
+      <p id="m-p-content-container-name"><%= @post.seller_name %>さんの出品</p>
+      <p id="m-p-content"><%= @post.content %></p>
+    </div>
+
+  <% if @post.is_sold && !@post.is_receive %>
+      <% if @post.bought_id == current_user.id %>
+        <div id="m-p-show-btn-container">
+          <%= button_to '購入をキャンセル', cancel_post_path(@post), method: :patch, :onclick => "return cancel_check()", id: "m-cancel" %>
+          <%= button_to '取引を完了させる', completed_post_path(@post), method: :patch, :onclick => "return complete_check()", id: "m-complete" %>
+        </div>
+      <% else %>
+        <p id="m-yet-sold">購入済み</p>
+      <% end %>
+    <% elsif @post.is_sold && @post.is_receive %>
+        <p id="m-yet-received">取引完了</p>
+    <% else %>
+      <% if @post.user_id != current_user.id %>
+        <%= button_to '購入', buy_post_path(@post), method: :patch, :onclick => "return buy_check()", id: "m-buy" %>
+      <% end %>
+    <% end %>
+</main>
+
+
+ <script>
+	function cancel_check() {
+		const result = window.confirm("購入をキャンセルしますか？？")
+    if (!result) {
+      return false;
+    }
+    return true;
+  };
+  
+	function complete_check() {
+		const result = window.confirm("取引を完了させますか？？")
+    if (!result) {
+      return false;
+    }
+    return true;
+  };
+
+	function buy_check() {
+		const result = window.confirm("購入を確定しますか？？")
+    if (!result) {
+      return false;
+    }
+    return true;
+  };
+
+	function delete_check() {
+		const result = window.confirm("削除しますか？？")
+    if (!result) {
+      return false;
+    }
+    return true;
+  };
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn1 = document.getElementById('btn1');
+    const chat = document.getElementById('accordion-chat');
+    const span1 = document.getElementById('span1');
+
+    btn1.addEventListener('click', function () {
+      if (chat.classList.contains('hide')) {
+        chat.classList.remove('hide');
+        span1.innerHTML = "&#9660;";
+      } else {
+        chat.classList.add('hide');
+        span1.innerHTML = "&#9654;";
+
+      }
+      
+    });
+    
+    
+    
+});
+</script> 
+
+
